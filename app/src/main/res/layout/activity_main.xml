@@ -5,15 +5,4 @@
     android:orientation="vertical">
 
 
-    <Button android:id="@+id/btnUsuario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Usuário"/>
-
-    <Button android:id="@+id/btnSeguidores"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Seguidores"/>
-
-
 </LinearLayout>
