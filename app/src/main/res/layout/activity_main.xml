@@ -4,5 +4,29 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!--<Button android:id="@+id/btnListView"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="ListView"/>-->
+
+    <!--<Button android:id="@+id/btnCardView"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="CardView"/>-->
+
+    <!--<Button android:id="@+id/btnRecyclerView"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="RecyclerView"/>-->
+
+ <!---->
+
+
+    <!--<ListView android:id="@+id/list_item"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:padding="16dp"/>-->
+
+
 
 </LinearLayout>
