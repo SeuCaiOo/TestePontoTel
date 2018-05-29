@@ -1,9 +1,9 @@
 package seucaioo.com.br.testeretrofit;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -21,35 +22,46 @@ import seucaioo.com.br.testeretrofit.model.DatasResponse;
 
 public class MainActivity extends AppCompatActivity {
 
-    RecyclerView recyclerView;
     private DatasAdapter adapter;
     private List<Data> dataList;
-    private Data data;
+
+
+    RecyclerView recyclerView;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         initViews();
-
     }
 
     private void initViews() {
 
-
-        recyclerView = findViewById(R.id.recyclerview);
-
         dataList = new ArrayList<>();
         adapter = new DatasAdapter(this, dataList);
 
+        recyclerView = findViewById(R.id.recyclerView);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
 
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(OnRefreshListener());
+
         loadJSON();
+
+    }
+
+    private SwipeRefreshLayout.OnRefreshListener OnRefreshListener() {
+        return new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadJSON();
+            }
+        };
     }
 
     private void loadJSON() {
@@ -62,15 +74,18 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<DatasResponse> call, Response<DatasResponse> response) {
                     if (response.isSuccessful()) {
+                        swipeRefreshLayout.setRefreshing(false);
                         List<Data> dataList = response.body().getDatas();
                         if (dataList != null) {
                             for (Data d : dataList) {
-                                recyclerView.setAdapter(new DatasAdapter(getApplicationContext(), dataList));
-                                Log.d("App", String.format("%s: %s -> %s", d.getName(), d.getPwd(), d.getId()));
-
+                                recyclerView.setAdapter(
+                                        new DatasAdapter(getApplicationContext(), dataList));
+                                Log.d("App", String.format(
+                                        "%s: %s -> %s", d.getName(), d.getPwd(), d.getId()));
                             }
                         } else {
-                            Toast.makeText(getBaseContext(), "Falha: " + String.valueOf(response.code()),
+                            Toast.makeText(getBaseContext(),
+                                    "Falha: " + String.valueOf(response.code()),
                                     Toast.LENGTH_LONG).show();
                         }
 
@@ -80,8 +95,10 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<DatasResponse> call, Throwable t) {
+                    swipeRefreshLayout.setRefreshing(false);
+                    recyclerView.setAdapter(new DatasAdapter(getApplicationContext(), dataList));
                     Log.d("App", t.getMessage());
-                    Toast.makeText(MainActivity.this, "Error Fetching Data!",
+                    Toast.makeText(MainActivity.this, "Erro ao buscar Dados!",
                             Toast.LENGTH_SHORT).show();
                 }
             });

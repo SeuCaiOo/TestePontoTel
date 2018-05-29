@@ -4,34 +4,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!--<Button android:id="@+id/btnListView"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="ListView"/>-->
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <!--<Button android:id="@+id/btnCardView"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="CardView"/>-->
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
 
-    <!--<Button android:id="@+id/btnRecyclerView"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="RecyclerView"/>-->
-
-
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-
-    <!--<ListView android:id="@+id/list_item"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:padding="16dp"/>-->
-
-
+        </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>
