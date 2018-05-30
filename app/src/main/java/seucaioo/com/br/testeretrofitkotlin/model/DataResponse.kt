@@ -2,6 +2,6 @@ package seucaioo.com.br.testeretrofitkotlin.model
 
 import com.google.gson.annotations.SerializedName
 
-class DatasResponse(
+class DataResponse(
         @SerializedName("data")
-        var datas: List<Data>)
+        var data: List<Data>)

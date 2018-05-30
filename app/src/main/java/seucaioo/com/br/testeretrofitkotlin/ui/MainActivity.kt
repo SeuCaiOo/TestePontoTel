@@ -14,7 +14,7 @@ import retrofit2.Response
 import seucaioo.com.br.testeretrofitkotlin.R
 import seucaioo.com.br.testeretrofitkotlin.model.Data
 import seucaioo.com.br.testeretrofitkotlin.retrofit.RetrofitInitializer
-import seucaioo.com.br.testeretrofitkotlin.model.DatasResponse
+import seucaioo.com.br.testeretrofitkotlin.model.DataResponse
 
 class MainActivity : AppCompatActivity() {
 
@@ -50,13 +50,13 @@ class MainActivity : AppCompatActivity() {
         try {
             val retrofit = RetrofitInitializer()
             val service = retrofit.dataService()
-            val call : Call<DatasResponse> = service.getDatas()
-            call.enqueue(object : Callback<DatasResponse?> {
-                override fun onResponse(call: Call<DatasResponse?>?, response: Response<DatasResponse?>?) {
+            val call : Call<DataResponse> = service.getData()
+            call.enqueue(object : Callback<DataResponse?> {
+                override fun onResponse(call: Call<DataResponse?>?, response: Response<DataResponse?>?) {
                     response?.body()?.let {
                         if (response.isSuccessful) {
                             swipeRefreshLayout.isRefreshing = false
-                            it.datas.let {
+                            it.data.let {
                                 for (d in it) {
                                     Log.d("App", String.format(
                                             "ID: %s -> Name: %s -> Pwd: %s", d.id, d.name, d.pwd))
@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                override fun onFailure(call: Call<DatasResponse?>?, t: Throwable?) {
+                override fun onFailure(call: Call<DataResponse?>?, t: Throwable?) {
                     swipeRefreshLayout.isRefreshing = false
                     recyclerView.adapter = DataAdapter(applicationContext, dataList)
                     Log.d("App", t?.message)
@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
             })
         } catch (e: Exception) {
             Log.d("App", e.message)
-            Toast.makeText(this, "ERRO", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Erro", Toast.LENGTH_LONG).show()
         }
     }
 
