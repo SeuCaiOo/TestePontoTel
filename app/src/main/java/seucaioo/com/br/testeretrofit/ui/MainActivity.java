@@ -19,7 +19,7 @@ import seucaioo.com.br.testeretrofit.R;
 import seucaioo.com.br.testeretrofit.retrofit.RetrofitInitializer;
 import seucaioo.com.br.testeretrofit.retrofit.DataService;
 import seucaioo.com.br.testeretrofit.model.Data;
-import seucaioo.com.br.testeretrofit.model.DatasResponse;
+import seucaioo.com.br.testeretrofit.model.DataResponse;
 
 public class MainActivity extends AppCompatActivity {
     private List<Data> dataList;
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(new DatasAdapter(this,dataList));
+        recyclerView.setAdapter(new DataAdapter(this,dataList));
 
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(OnRefreshListener());
@@ -63,17 +63,17 @@ public class MainActivity extends AppCompatActivity {
             RetrofitInitializer retrofit = new RetrofitInitializer();
             DataService service = retrofit.dataService();
 
-            Call<DatasResponse> call = service.getDatas();
-            call.enqueue(new Callback<DatasResponse>() {
+            Call<DataResponse> call = service.getData();
+            call.enqueue(new Callback<DataResponse>() {
                 @Override
-                public void onResponse(Call<DatasResponse> call, Response<DatasResponse> response) {
+                public void onResponse(Call<DataResponse> call, Response<DataResponse> response) {
                     if (response.isSuccessful()) {
                         swipeRefreshLayout.setRefreshing(false);
-                        List<Data> dataList = response.body().getDatas();
+                        List<Data> dataList = response.body().getData();
                         if (dataList != null) {
                             for (Data d : dataList) {
                                 recyclerView.setAdapter(
-                                        new DatasAdapter(getApplicationContext(), dataList));
+                                        new DataAdapter(getApplicationContext(), dataList));
                                 Log.d("App", String.format(
                                         "ID: %s -> Name: %s -> Pwd: %s", d.getId(), d.getName(), d.getPwd()));
                             }
@@ -84,9 +84,9 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<DatasResponse> call, Throwable t) {
+                public void onFailure(Call<DataResponse> call, Throwable t) {
                     swipeRefreshLayout.setRefreshing(false);
-                    recyclerView.setAdapter(new DatasAdapter(getApplicationContext(), dataList));
+                    recyclerView.setAdapter(new DataAdapter(getApplicationContext(), dataList));
                     Log.d("App", t.getMessage());
                     Toast.makeText(MainActivity.this,
                             "Erro ao buscar dados.\nVerifique sua conexão com a Internet !",
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
             });
         } catch (Exception e) {
             Log.d("App", e.getMessage());
-            Toast.makeText(this, "ERRO", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Erro ", Toast.LENGTH_LONG).show();
         }
     }
 
