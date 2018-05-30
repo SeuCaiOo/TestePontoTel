@@ -1,4 +1,4 @@
-package seucaioo.com.br.testeretrofit;
+package seucaioo.com.br.testeretrofit.ui;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,8 +15,9 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import seucaioo.com.br.testeretrofit.api.Client;
-import seucaioo.com.br.testeretrofit.api.Service;
+import seucaioo.com.br.testeretrofit.R;
+import seucaioo.com.br.testeretrofit.retrofit.RetrofitInitializer;
+import seucaioo.com.br.testeretrofit.retrofit.DataService;
 import seucaioo.com.br.testeretrofit.model.Data;
 import seucaioo.com.br.testeretrofit.model.DatasResponse;
 
@@ -66,10 +67,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadJSON() {
         try {
-            Client client = new Client();
-            Service apiService = Client.getClient().create(Service.class);
+            RetrofitInitializer retrofit = new RetrofitInitializer();
+            DataService service = retrofit.dataService();
 
-            Call<DatasResponse> call = apiService.getDatas();
+            Call<DatasResponse> call = service.getDatas();
             call.enqueue(new Callback<DatasResponse>() {
                 @Override
                 public void onResponse(Call<DatasResponse> call, Response<DatasResponse> response) {
@@ -98,8 +99,9 @@ public class MainActivity extends AppCompatActivity {
                     swipeRefreshLayout.setRefreshing(false);
                     recyclerView.setAdapter(new DatasAdapter(getApplicationContext(), dataList));
                     Log.d("App", t.getMessage());
-                    Toast.makeText(MainActivity.this, "Erro ao buscar Dados!",
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this,
+                            "Erro ao buscar Dados, Verifique sua conexão com a Internet !",
+                            Toast.LENGTH_LONG).show();
                 }
             });
         } catch (Exception e) {
