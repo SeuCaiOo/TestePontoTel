@@ -21,9 +21,6 @@ import java.util.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
-//    private var adapter: DatasAdapter? = null
-//    private var dataList: List<Data>? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -47,6 +44,8 @@ class MainActivity : AppCompatActivity() {
 
         val swipeRefreshLayout = swipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener(OnRefreshLayout())
+
+        loadJSON()
 
     }
 
@@ -84,7 +83,8 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onFailure(call: Call<DataResponse>, t: Throwable) {
                     swipeRefreshLayout.isRefreshing = false
-//                    recyclerView.adapter = DataAdapter(applicationContext, dataList)
+                    val dataList = listOf<Data>()
+                    recyclerView.adapter = DataAdapter(applicationContext, dataList)
                     Log.d("App", t.message)
                     Toast.makeText(this@MainActivity, "Erro ao buscar Dados!",
                             Toast.LENGTH_SHORT).show()
