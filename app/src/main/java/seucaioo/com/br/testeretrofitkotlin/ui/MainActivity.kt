@@ -24,11 +24,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         init()
     }
 
     private fun init() {
+
         val recyclerView = recyclerView
         val mLayoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = mLayoutManager
@@ -46,81 +46,42 @@ class MainActivity : AppCompatActivity() {
         return SwipeRefreshLayout.OnRefreshListener { loadJSON() }
     }
 
-    private fun loadJSON() = try {
-
-        val retrofit = RetrofitInitializer()
-        val service = retrofit.dataService()
-
-        val call : Call<DatasResponse> = service.getDatas()
-        call.enqueue( object : Callback<DatasResponse?> {
-            override fun onResponse(call: Call<DatasResponse?>?, response: Response<DatasResponse?>?) {
-                response?.let {
-                    swipeRefreshLayout.isRefreshing = false
-                    response?.body()?.datas.let {
-                        val dataList : List<Data>? = it
-                        if (dataList != null) {
-                            for (d in dataList) {
-                                recyclerView.adapter = DataAdapter(applicationContext, dataList)
-                                Log.d("App", String.format("%s: %s -> %s", d.name, d.pwd, d.id))
+    private fun loadJSON() {
+        try {
+            val retrofit = RetrofitInitializer()
+            val service = retrofit.dataService()
+            val call : Call<DatasResponse> = service.getDatas()
+            call.enqueue(object : Callback<DatasResponse?> {
+                override fun onResponse(call: Call<DatasResponse?>?, response: Response<DatasResponse?>?) {
+                    response?.body()?.let {
+                        if (response.isSuccessful) {
+                            swipeRefreshLayout.isRefreshing = false
+                            it.datas.let {
+                                for (d in it) {
+                                    Log.d("App", String.format(
+                                            "ID: %s -> Name: %s -> Pwd: %s", d.id, d.name, d.pwd))
+                                    recyclerView.adapter = DataAdapter(applicationContext, it)
+                                }
                             }
                         } else {
-                            Toast.makeText(baseContext,
-                                    "Falha: " + response.code().toString(),
-                                    Toast.LENGTH_LONG).show()
+                            Log.d("App", "Erro: " + response.code().toString())
                         }
                     }
                 }
-            }
 
-            override fun onFailure(call: Call<DatasResponse?>?, t: Throwable?) {
-                swipeRefreshLayout.isRefreshing = false
-                recyclerView.adapter = DataAdapter(applicationContext, dataList)
-                Log.d("App", t?.message)
-                Toast.makeText(this@MainActivity, "Erro ao buscar Dados!",
-                        Toast.LENGTH_SHORT).show()
-            }
-        }
-        )
-
-/*
-        call.enqueue(object : Callback<DatasResponse> {
-            override fun onResponse(call: Call<DatasResponse>, response: Response<DatasResponse>) {
-                if (response.isSuccessful()) {
+                override fun onFailure(call: Call<DatasResponse?>?, t: Throwable?) {
                     swipeRefreshLayout.isRefreshing = false
-                    val dataList = response.body()!!.datas
-                    if (dataList != null) {
-                        for (d in dataList!!) {
-                            recyclerView.adapter = DataAdapter(applicationContext, dataList)
-                            Log.d("App", String.format(
-                                    "%s: %s -> %s", d.name, d.pwd, d.id))
-                        }
-                    } else {
-                        Toast.makeText(baseContext,
-                                "Falha: " + response.code().toString(),
-                                Toast.LENGTH_LONG).show()
-                    }
-
+                    recyclerView.adapter = DataAdapter(applicationContext, dataList)
+                    Log.d("App", t?.message)
+                    Toast.makeText(this@MainActivity,
+                            "Erro ao buscar dados.\nVerifique sua conexão com a Internet !",
+                            Toast.LENGTH_LONG).show()
                 }
-
-            }
-
-            override fun onFailure(call: Call<DatasResponse>, t: Throwable) {
-                swipeRefreshLayout.isRefreshing = false
-                val dataList = listOf<Data>()
-                recyclerView.adapter = DataAdapter(applicationContext, dataList)
-                Log.d("App", t.message)
-                Toast.makeText(this@MainActivity, "Erro ao buscar Dados!",
-                        Toast.LENGTH_SHORT).show()
-            }
-        })
-
-*/
-
-    } catch (e: Exception) {
-        Log.d("App", e.message)
-        Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show()
+            })
+        } catch (e: Exception) {
+            Log.d("App", e.message)
+            Toast.makeText(this, "ERRO", Toast.LENGTH_LONG).show()
+        }
     }
-
-
 
 }
