@@ -22,11 +22,7 @@ import seucaioo.com.br.testeretrofit.model.Data;
 import seucaioo.com.br.testeretrofit.model.DatasResponse;
 
 public class MainActivity extends AppCompatActivity {
-
-    private DatasAdapter adapter;
     private List<Data> dataList;
-
-
     RecyclerView recyclerView;
     SwipeRefreshLayout swipeRefreshLayout;
 
@@ -39,21 +35,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-
         dataList = new ArrayList<>();
-        adapter = new DatasAdapter(this, dataList);
 
         recyclerView = findViewById(R.id.recyclerView);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(new DatasAdapter(this,dataList));
 
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(OnRefreshListener());
 
         loadJSON();
-
     }
 
     private SwipeRefreshLayout.OnRefreshListener OnRefreshListener() {
@@ -82,16 +75,12 @@ public class MainActivity extends AppCompatActivity {
                                 recyclerView.setAdapter(
                                         new DatasAdapter(getApplicationContext(), dataList));
                                 Log.d("App", String.format(
-                                        "%s: %s -> %s", d.getName(), d.getPwd(), d.getId()));
+                                        "ID: %s -> Name: %s -> Pwd: %s", d.getId(), d.getName(), d.getPwd()));
                             }
                         } else {
-                            Toast.makeText(getBaseContext(),
-                                    "Falha: " + String.valueOf(response.code()),
-                                    Toast.LENGTH_LONG).show();
+                            Log.d("App", "Erro: " + String.valueOf(response.code()));
                         }
-
                     }
-
                 }
 
                 @Override
@@ -100,15 +89,14 @@ public class MainActivity extends AppCompatActivity {
                     recyclerView.setAdapter(new DatasAdapter(getApplicationContext(), dataList));
                     Log.d("App", t.getMessage());
                     Toast.makeText(MainActivity.this,
-                            "Erro ao buscar Dados, Verifique sua conexão com a Internet !",
+                            "Erro ao buscar dados.\nVerifique sua conexão com a Internet !",
                             Toast.LENGTH_LONG).show();
                 }
             });
         } catch (Exception e) {
             Log.d("App", e.getMessage());
-            Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "ERRO", Toast.LENGTH_LONG).show();
         }
-
     }
 
 }
